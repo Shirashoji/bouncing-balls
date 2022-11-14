@@ -181,7 +181,6 @@ function loop() {
             balls[i].draw();
             balls[i].update();
             balls[i].collisionDetect();
-        } else {
             count++;
         }
     }
