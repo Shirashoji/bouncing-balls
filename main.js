@@ -20,18 +20,18 @@ function randomRGB() {
 }
 
 class Shape {
-    constructor(x, y, velX, velY) {
+    constructor(x, y, dx, dy) {
         this.x = x;
         this.y = y;
-        this.velX = velX;
-        this.velY = velY;
+        this.dx = dx;
+        this.dy = dy;
         this.exists = true;
     }
 }
 
 class Ball extends Shape {
-    constructor(x, y, velX, velY, color, size) {
-        super(x, y, velX, velY);
+    constructor(x, y, dx, dy, color, size) {
+        super(x, y, dx, dy);
         this.color = color;
         this.size = size;
     }
@@ -44,26 +44,26 @@ class Ball extends Shape {
     update() {
         if ((this.x + this.size) >= width) {
             this.x = width - this.size;
-            this.velX = -(this.velX);
+            this.dx = -(this.dx);
         }
 
         if ((this.x - this.size) <= 0) {
             this.x = this.size;
-            this.velX = -(this.velX);
+            this.dx = -(this.dx);
         }
 
         if ((this.y + this.size) >= height) {
             this.y = height - this.size;
-            this.velY = -(this.velY);
+            this.dy = -(this.dy);
         }
 
         if ((this.y - this.size) <= 0) {
             this.y = this.size;
-            this.velY = -(this.velY);
+            this.dy = -(this.dy);
         }
 
-        this.x += this.velX;
-        this.y += this.velY;
+        this.x += this.dx;
+        this.y += this.dy;
     }
 
     collisionDetect() {
@@ -81,7 +81,7 @@ class Ball extends Shape {
     }
 }
 
-class EvilCircle extends Shape {
+class Player extends Shape {
     constructor(x, y) {
         super(x, y, 20, 20);
         this.color = 'white';
@@ -91,22 +91,22 @@ class EvilCircle extends Shape {
                 case "Left": // IE/Edge specific value
                 case "ArrowLeft":
                 case 'a':
-                    this.x -= this.velX;
+                    this.x -= this.dx;
                     break;
                 case "Right": // IE/Edge specific value
                 case "ArrowRight":
                 case 'd':
-                    this.x += this.velX;
+                    this.x += this.dx;
                     break;
                 case "Up": // IE/Edge specific value
                 case "ArrowUp":
                 case 'w':
-                    this.y -= this.velY;
+                    this.y -= this.dy;
                     break;
                 case "Down": // IE/Edge specific value
                 case "ArrowDown":
                 case 's':
-                    this.y += this.velY;
+                    this.y += this.dy;
                     break;
             }
         });
@@ -154,20 +154,18 @@ let balls = [];
 while (balls.length < 25) {
     let size = random(10, 20);
     let ball = new Ball(
-        // ball position always drawn at least one ball width
-        // away from the edge of the canvas, to avoid drawing errors
         random(0 + size, width - size),
         random(0 + size, height - size),
         random(-7, 7),
         random(-7, 7),
-        'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) + ')',
+        randomRGB(),
         size
     );
 
     balls.push(ball);
 }
 
-let evilBall = new EvilCircle(random(0, width), random(0, height));
+let playerBall = new Player(random(0, width), random(0, height));
 
 function loop() {
     width = window.innerWidth;
@@ -185,9 +183,9 @@ function loop() {
         }
     }
     document.getElementsByTagName('p')[0].innerHTML = `Ball count: ${count}`;
-    evilBall.draw();
-    evilBall.checkBounds();
-    evilBall.collisionDetect();
+    playerBall.draw();
+    playerBall.checkBounds();
+    playerBall.collisionDetect();
     requestAnimationFrame(loop);
 }
 
